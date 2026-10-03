@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skycast
+  namespace: skycast
+  labels:
+    app.kubernetes.io/name: skycast
+    app.kubernetes.io/part-of: gitops-lab
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: skycast
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: skycast
+        app.kubernetes.io/part-of: gitops-lab
+    spec:
+      containers:
+        - name: skycast
+          image: skycast:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+          volumeMounts:
+            - name: app-config
+              mountPath: /usr/share/nginx/html/config.js
+              subPath: config.js
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+      volumes:
+        - name: app-config
+          configMap:
+            name: skycast-config

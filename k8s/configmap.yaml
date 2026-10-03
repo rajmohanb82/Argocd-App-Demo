@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: skycast-config
+  namespace: skycast
+  labels:
+    app.kubernetes.io/name: skycast
+    app.kubernetes.io/part-of: gitops-lab
+data:
+  config.js: |
+    window.__APP_CONFIG__ = {
+      title: "SkyCast",
+      subtitle: "Live weather for GitOps classrooms",
+      version: "1.0.0",
+      labHint: "This banner comes from a ConfigMap. Edit it in the cluster to create drift — Argo CD will heal it back."
+    };
