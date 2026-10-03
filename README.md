@@ -39,20 +39,21 @@ Open [http://localhost:5173](http://localhost:5173).
 docker compose up --build
 ```
 
-Open [http://localhost:8080](http://localhost:8080).
+Open [http://localhost:8282](http://localhost:8282).
 
 Build the class image yourself:
 
 ```bash
 docker build -t skycast:1.0.0 .
-docker run --rm -p 8080:80 skycast:1.0.0
+docker run --rm -p 8282:80 skycast:1.0.0
 ```
 
-Load that image into a local cluster before Argo CD syncs:
+`skycast:1.0.0` lives on your laptop, not on Docker Hub. Kind and minikube will fail with `ErrImagePull` / `insufficient_scope` until you copy the image into the cluster:
 
 ```bash
-# kind
-kind load docker-image skycast:1.0.0
+# kind — use your cluster name (this lab uses argocd-lab)
+kind load docker-image skycast:1.0.0 --name argocd-lab
+kubectl -n skycast rollout restart deploy/skycast
 
 # minikube
 minikube image load skycast:1.0.0
@@ -86,7 +87,7 @@ Watch the app:
 ```bash
 kubectl -n argocd get application skycast
 kubectl -n skycast get deploy,pods,svc,cm
-kubectl -n skycast port-forward svc/skycast 8080:80
+kubectl -n skycast port-forward svc/skycast 8282:8282
 ```
 
 ## Classroom lab

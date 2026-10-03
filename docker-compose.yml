@@ -5,5 +5,5 @@ services:
       dockerfile: Dockerfile
     image: skycast:1.0.0
     ports:
-      - "8080:80"
+      - "8282:80"
     restart: unless-stopped
